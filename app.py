@@ -162,7 +162,7 @@ def recommendation_agent(form_data):
     
     Health Insurance Products:
     1. "Sống Khỏe" (Healthy Living)
-    - Comprehensive critical illness coverage
+    - Comprehensive critical illness coverage 
     - Covers 45 critical illnesses
     - Lump sum payment up to 2 billion VND
     - Premium payment term: 10-20 years
