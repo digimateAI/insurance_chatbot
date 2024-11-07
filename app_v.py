@@ -119,7 +119,7 @@ def initialize_session_state():
     """Initialize all session state variables"""
     if "messages" not in st.session_state:
         st.session_state.messages = [
-            {"role": "assistant", "content": "Hello! I'm your Life Insurance AI Agent. Please tell me how do I address you?"}
+            {"role": "assistant", "content": "Xin chào! Tôi là trợ lý AI của bạn. Xin vui lòng cho tôi biết cách xưng hô với bạn:"}
         ]
     if "setup_complete" not in st.session_state:
         st.session_state.setup_complete = False
@@ -192,10 +192,10 @@ def recommendation_agent(form_data):
         - Next steps"""),
         
         ("human", """Customer Profile:
-        Age: {age}
-        Marital status: {marital_status}
-        Have children: {has_children}
-        Number of children: {num_children}
+        Tuổi: {age}
+        Tình trạng hôn nhân: {marital_status}
+        Có con: {has_children}
+        Số con: {num_children}
         
         Available Products:
         {products}
@@ -216,8 +216,8 @@ def recommendation_agent(form_data):
     # Generate recommendations
     recommendations = chain.run(
         age=form_data["age"],
-        marital_status="Married" if form_data["is_married"] else "Single",
-        has_children="Yes" if form_data["has_children"] else "No",
+        marital_status="Đã kết hôn" if form_data["is_married"] else "Độc thân",
+        has_children="Có" if form_data["has_children"] else "Không",
         num_children=form_data["num_children"],
         products=sample_product_info
     )
@@ -231,15 +231,15 @@ def recommendation_agent(form_data):
 def get_user_details():
     """Collect initial user details"""
     with st.form("user_details", clear_on_submit=True):
-        st.markdown("### Welcome to MB Ageas Insurance")
+        st.markdown("### Chào mừng đến với Bảo hiểm MB Ageas")
         
         col1, col2, col3 = st.columns([1, 2, 0.5])
         
         with col1:
-            title = st.radio("Title", ["Mr.", "Mrs.", "Miss"], horizontal=True)
+            title = st.radio("Title", ["Ông", "Bà.", "Cô"], horizontal=True)
         
         with col2:
-            name = st.text_input("Name", placeholder="Enter your full name")
+            name = st.text_input("Name", placeholder="Nhập tên đầy đủ của bạn")
         
         with col3:
             submit = st.form_submit_button("→")
@@ -248,7 +248,7 @@ def get_user_details():
             st.session_state.user_title = title
             st.session_state.user_name = name.strip()
             st.session_state.setup_complete = True
-            welcome_message = f"Nice to meet you, {title} {name}! I am an AI insurance agent. I can help you to know more about life insurance & suggest suitable products based on your need. Let me know, how can I assist you today?"
+            welcome_message = f"Rất vui được gặp bạn, {title} {name}! Tôi là đại lý bảo hiểm AI. Tôi có thể giúp bạn biết thêm về bảo hiểm nhân thọ và đề xuất các sản phẩm phù hợp dựa trên nhu cầu của bạn. Hãy cho tôi biết, hôm nay tôi có thể giúp gì cho bạn?"
             st.session_state.messages.extend([
                 {"role": "user", "content": f"Selected: {title} {name}"},
                 {"role": "assistant", "content": welcome_message}
@@ -258,34 +258,34 @@ def get_user_details():
 def process_needs_form():
     """Handle the needs assessment form and generate recommendations"""
     with st.form("needs_assessment"):
-        st.write("### Assess needs quickly")
+        st.write("### Đánh giá nhu cầu nhanh")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            age = st.slider("Your age", 18, 100, 30)
-            is_married = st.radio("Are you married?", options=["Yes", "No"], horizontal=True) == "Yes"
+            age = st.slider("Tuổi của bạn", 18, 100, 30)
+            is_married = st.radio("Bạn kết hôn rồi phải không?", options=["Đúng", "KHÔNG"], horizontal=True) == "Đúng"
         
         with col2:
-            has_children = st.radio("Do you have children?", options=["Yes", "No"], horizontal=True) == "Yes"
+            has_children = st.radio("Bạn có con không?", options=["Đúng", "KHÔNG"], horizontal=True) == "Đúng"
             if has_children:
-                num_children = st.number_input("Number of children", 0, 10, 0)
+                num_children = st.number_input("Số lượng trẻ em", 0, 10, 0)
             else:
                 num_children = 0
 
-        st.write("### Contact information")
-        phone = st.text_input("Phone number", placeholder="Enter your 10-digit phone number")
-        email = st.text_input("Email address", placeholder="Enter your email address")
+        st.write("### Thông tin liên hệ")
+        phone = st.text_input("Số điện thoại", placeholder="Nhập số điện thoại gồm 10 chữ số của bạn")
+        email = st.text_input("Địa chỉ email", placeholder="Nhập địa chỉ email của bạn")
 
-        submitted = st.form_submit_button("Get personalized recommendations")
+        submitted = st.form_submit_button("Nhận đề xuất được cá nhân hóa")
         
         if submitted:
             if not phone or not phone.isdigit() or len(phone) != 10:
-                st.error("Please enter a valid 10-digit phone number.")
+                st.error("Vui lòng nhập số điện thoại hợp lệ gồm 10 chữ số.")
                 return
             
             if not email or '@' not in email:
-                st.error("Please enter a valid email address.")
+                st.error("Vui lòng nhập địa chỉ email hợp lệ.")
                 return
             
             # Store form data
@@ -306,7 +306,7 @@ def process_needs_form():
             
             # Add recommendations to chat history
             st.session_state.messages.extend([
-                {"role": "assistant", "content": "Based on your profile, here are my personalized recommendations:"},
+                {"role": "assistant", "content": "Dựa trên hồ sơ của bạn, đây là những đề xuất được cá nhân hóa của tôi:"},
                 {"role": "assistant", "content": recommendations["output"]}
             ])
             
@@ -320,7 +320,7 @@ def process_needs_form():
 def render_contact_calendar_form():
     """Render the contact and calendar scheduling form"""
     with st.form("contact_calendar"):
-        st.write("### Schedule a consultation")
+        st.write("### Đặt lịch tư vấn")
         
         col1, col2 = st.columns(2)
         
@@ -329,7 +329,7 @@ def render_contact_calendar_form():
             min_date = datetime.now().date()
             max_date = min_date + timedelta(days=30)
             selected_date = st.date_input(
-                "Preferred Date",
+                "Ngày ưa thích",
                 min_value=min_date,
                 max_value=max_date,
                 value=min_date
@@ -341,15 +341,15 @@ def render_contact_calendar_form():
             for hour in range(9, 18):  # 9 AM to 5 PM
                 time_slots.extend([f"{hour:02d}:00", f"{hour:02d}:30"])
             
-            selected_time = st.selectbox("Preferred Time", time_slots)
+            selected_time = st.selectbox("Thời gian ưa thích", time_slots)
         
-        st.markdown("### Additional Notes")
-        notes = st.text_area("Any specific questions or concerns?", 
-                           placeholder="Optional: Enter any specific topics you'd like to discuss...")
+        st.markdown("### Ghi chú bổ sung")
+        notes = st.text_area("Bất kỳ câu hỏi hoặc mối quan tâm cụ thể nào?", 
+                           placeholder="Optional: Nhập bất kỳ chủ đề cụ thể nào bạn muốn thảo luận...")
         
         col3, col4 = st.columns([3, 1])
         with col4:
-            submitted = st.form_submit_button("Schedule Call")
+            submitted = st.form_submit_button("Lên lịch cuộc gọi")
         
         if submitted:
             if selected_date and selected_time:
@@ -361,7 +361,7 @@ def render_contact_calendar_form():
                 st.session_state.appointments.append(appointment)
                 
                 success_msg = f"""
-                Thank you for scheduling a consultation!
+                Cảm ơn bạn đã đặt lịch tư vấn!
                 \nDate: {selected_date.strftime('%B %d, %Y')}
                 \nTime: {selected_time}
                 \nOur representative will contact you at the scheduled time.
@@ -371,7 +371,7 @@ def render_contact_calendar_form():
                 st.session_state.show_contact_form = False
                 return True
             else:
-                st.error("Please select both date and time for the consultation.")
+                st.error("Vui lòng chọn cả ngày và giờ để được tư vấn.")
     return False
 
 def process_user_input(user_input: str):
@@ -449,7 +449,7 @@ def main():
 
         with input_container:
             if st.session_state.setup_complete:
-                prompt = st.chat_input(f"Type your message here, {st.session_state.user_name}...")
+                prompt = st.chat_input(f"Nhập tin nhắn của bạn ở đây, {st.session_state.user_name}...")
                 
                 if prompt:
                     st.session_state.messages.append({"role": "user", "content": prompt})
